@@ -1,5 +1,5 @@
 '''
-Tests for Deck model
+Tests for Deck and Card model
 '''
 import unittest
 import card_games.model.deck as d
@@ -22,6 +22,12 @@ class TestDeck(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             d.Deck(start_from='9',end_on='6',no_of_copies=7,no_of_jokers=1)
+        
+        with self.assertRaises(ValueError):
+            d.Deck(start_from='6',end_on='9',no_of_copies=7,no_of_jokers=-1)
+
+        with self.assertRaises(ValueError):
+            d.Deck(start_from='6',end_on='7',no_of_copies=0,no_of_jokers=1)
 
     def test_deck_one_card_methods(self):
         ''' test for drawing and returning card to a pile'''
@@ -57,7 +63,7 @@ class TestDeck(unittest.TestCase):
         self.assertEqual(5,len(hand2))
         self.assertEqual(41,len(deck.pile))
 
-        deck.return_cards(hand1,card,hand2)
+        deck.return_cards([hand1,card,hand2])
         self.assertEqual(52,len(deck.pile))
         self.assertEqual(len(deck.pile),len(set(deck.pile))) #check if there are no duplicate cards
 
@@ -76,3 +82,12 @@ class TestDeck(unittest.TestCase):
 
         card=deck.draw_card()
         self.assertIsNone(card)
+
+    def test_two_decks(self):
+        ''' test for multiple decks are independedly handled'''
+        deck1=d.Deck()
+        deck2=d.Deck()
+        deck1.shuffle_pile()
+        self.assertEqual(str(c.Card('A','\u2660')),str(deck2.draw_card()))
+        self.assertEqual(52,len(deck1.pile))
+        self.assertEqual(51,len(deck2.pile))

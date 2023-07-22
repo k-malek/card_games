@@ -1,0 +1,73 @@
+'''
+Tests for Player model
+'''
+import unittest
+from card_games.model.deck import Deck
+from card_games.model.card import Card
+from card_games.model.player import Player
+
+class TestPlayer(unittest.TestCase):
+    def test_player_init(self):
+        ''' test for player object initialization'''
+        player_1=Player('Mark')
+        self.assertEqual('Mark',player_1.name)
+        self.assertEqual('0',player_1.points)
+        self.assertEqual([[]],player_1.hands)
+        player_2=Player('Bob',1000)
+        self.assertEqual('Bob',player_2.name)
+        self.assertEqual('1000',player_2.points)
+        self.assertEqual([[]],player_2.hands)
+        player_3=Player('Wade',2000,3)
+        self.assertEqual('Wade',player_3.name)
+        self.assertEqual('2000',player_3.points)
+        self.assertEqual([[],[],[]],player_3.hands)
+
+    def test_player_incorrect_init(self):
+        ''' test for player object initialization with incorrect input'''
+        with self.assertRaises(ValueError):
+            Player("")
+        with self.assertRaises(ValueError):
+            Player("daujisdhoahodihasohdaosdhi")
+
+    def test_player_one_hand_draw(self):
+        ''' test for player with one hand drawing a cards'''
+        deck=Deck()
+        deck.shuffle_pile()
+        player=Player("Sean")
+        player.draw_card(deck)
+        self.assertEqual(1,len(player.hands[0]))
+
+        player.draw_cards(deck,amount=4)
+        self.assertEqual(5,len(player.hands[0]))
+
+        #draw a card to a second - non existant - hand (exception handled)
+        player.draw_card(deck,hand_pos=2)
+        #deck and hand are unaffected
+        self.assertEqual(47,len(deck.pile))
+        self.assertEqual(5,len(player.hands[0]))
+
+    def test_player_one_hand_return(self):
+        ''' test for player with one hand returning a cards'''
+        deck=Deck()
+
+        player=Player("Vinny")
+        player.draw_cards(deck,amount=10)
+        self.assertEqual(10,len(player.hands[0]))
+
+        player.return_card(deck,card_pos=1,deck_pos='t')
+        self.assertEqual(9,len(player.hands[0]))
+        self.assertEqual(43,len(deck.pile))
+
+        #return a card from a second - non existant - hand (exception handled)
+        player.return_card(deck,hand_pos=2)
+        self.assertEqual(9,len(player.hands[0]))
+        self.assertEqual(43,len(deck.pile))
+
+        #return a card with index higher than amount of cards (exception handled)
+        player.return_card(deck,card_pos=10)
+        self.assertEqual(9,len(player.hands[0]))
+        self.assertEqual(43,len(deck.pile))
+
+        player.return_all_cards(deck)
+        self.assertEqual([[]],player.hands)
+        self.assertEqual(52,len(deck.pile))

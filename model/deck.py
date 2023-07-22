@@ -1,6 +1,7 @@
 ''' Model for deck of playing cards deck object'''
-import card_games.model.card as c
+
 from random import shuffle,randint
+import card_games.model.card as c
 
 class Deck:
     ranks=[str(x) for x in range(2,11)]+['J','Q','K','A']
@@ -51,12 +52,10 @@ class Deck:
 
     def return_card(self,card,position='b'):
         '''
-            Returns a c.Card to a pile.
-            Required parameter:
-                c.Card - a c.Card object to place in a deck
+            Returns a {card} to a pile.
             Optional parameter:
-                position ('b','t') - indicates wheather the c.Card is to placed on (t)op or on (b)ottom of a pile.
-                                    if anything else given - places a c.Card on a random place in a deck
+                position ('b','t') - indicates wheather the {card} is to placed on (t)op or on (b)ottom of a pile.
+                                    if anything else given - places a {card} in a random place in a deck
         '''
         if position=='b':
             self.pile.insert(0,card)
@@ -65,15 +64,17 @@ class Deck:
         else:
             self.pile.insert(randint(0,len(self.pile)-1),card)
 
-    def return_cards(self,*args,do_shuffle=True):
+    def return_cards(self,cards,do_shuffle=True):
         '''
-            Returns all provided cards to the pile and shuffles it (may be ommited with optional argument do_shuffle=False)
+            Returns all provided cards (as list, which may contain single cards 
+            as well as list of cards (ex. hands)) to the pile
+            than the pile is shuffled (may be ommited with optional argument do_shuffle=False)
         '''
-        for arg in args:
-            if isinstance(arg,list):
-                self.pile+=arg
+        for card_group in cards:
+            if isinstance(card_group,list):
+                self.pile+=card_group
             else:
-                self.pile.append(arg)
+                self.pile.append(card_group)
         
         if do_shuffle:
             self.shuffle_pile()
