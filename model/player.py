@@ -1,4 +1,5 @@
 ''' Model for deck of player object'''
+from card_games.model.hand import Hand
 
 class Player():
     def __init__(self,name,start_points=0,amount_of_hands=1):
@@ -8,7 +9,7 @@ class Player():
             raise ValueError("Amount of hands has to be greater than zero")
         self.name=name
         self._points=start_points
-        self.hands=[[] for i in range(amount_of_hands)]
+        self.hands=[Hand() for i in range(amount_of_hands)]
         self.amount_of_hands=amount_of_hands
 
     @property
@@ -20,18 +21,19 @@ class Player():
     def points(self,new_points):
         self._points=new_points
 
-    def add_hand(self,cards=None):
+    def add_hand(self,cards=None,pos=None):
         ''' 
             adds new hand for a player with a given {cards} 
             (or an empty hand if None cards provided)
+            hand can be set to a specific position in players hands list ({pos})
         '''
-        cards=cards if cards else []
-        self.hands.append(cards)
+        pos = pos if pos else len(cards)
+        self.hands.insert(pos,Hand(cards))
 
     def draw_card(self,deck,hand_pos=1):
         ''' draw one card from given {deck} to the players hand with id of {hand_pos}'''
         try:
-            self.hands[hand_pos-1].append(deck.draw_card())
+            self.hands[hand_pos-1]+deck.draw_card()
         except IndexError:
             print(f'Currently player {self.name} has only {len(self.hands)} hands!')
 
@@ -40,7 +42,7 @@ class Player():
         if amount<1:
             raise ValueError('Please, pick more cards than that!')
         try:
-            self.hands[hand_pos-1].extend(deck.draw_cards(amount))
+            self.hands[hand_pos-1]+deck.draw_cards(amount)
         except IndexError:
             print(f'Currently player {self.name} has only {len(self.hands)} hands!')
 
@@ -54,28 +56,30 @@ class Player():
                         (t)op or on (b)ottom of a {deck} pile. If anything else 
                         given - places a card on a random place in a {deck}}
         '''
-        card_pos=card_pos-1 if card_pos>0 else card_pos
+        card=None
         try:
-            deck.return_card(self.hands[hand_pos-1][card_pos],deck_pos)
-            del self.hands[hand_pos-1][card_pos]
+            card=self.hands[hand_pos-1].return_card(card_pos)
         except IndexError:
-            if hand_pos>len(self.hands):
-                print(f'Currently player {self.name} has only {len(self.hands)} hands!')
-            else:
-                print(f'Currently player {self.name} has only {len(self.hands[hand_pos-1])} cards in {hand_pos}. hand!')
+            print(f'Currently player {self.name} has only {len(self.hands)} hands!')
+        if card:
+            deck.return_card(card,deck_pos)
 
     def return_all_cards(self,deck,do_shuffle=True):
         ''' 
             returns all cards from all hands to a deck,
-            than shuffles it (may be ommited with optional argument do_shuffle=False)
+            deck is shuffled (may be ommited with optional argument do_shuffle=False)
+            hands are reset to expected amount
         '''
-        deck.return_cards(*[cards for cards in self.hands],do_shuffle)
-        self.hands=[[] for i in range(self.amount_of_hands)]
+        all_cards=[]
+        for hand in self.hands:
+            all_cards+=hand.return_cards()
+        deck.return_cards(all_cards,do_shuffle)
+        self.hands=[Hand() for i in range(self.amount_of_hands)]
 
 
     def show_hand(self,hand_pos=1):
         ''' returns string of cards in players hand with id of {hand_pos}'''
         try:
-            return " ".join(self.hands[hand_pos-1])
+            return str(self.hands[hand_pos-1])
         except IndexError:
             print(f'Currently player {self.name} has only {len(self.hands)} hands!')

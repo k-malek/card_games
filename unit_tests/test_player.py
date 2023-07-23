@@ -3,7 +3,7 @@ Tests for Player model
 '''
 import unittest
 from card_games.model.deck import Deck
-from card_games.model.card import Card
+from card_games.model.hand import Hand
 from card_games.model.player import Player
 
 class TestPlayer(unittest.TestCase):
@@ -12,15 +12,18 @@ class TestPlayer(unittest.TestCase):
         player_1=Player('Mark')
         self.assertEqual('Mark',player_1.name)
         self.assertEqual('0',player_1.points)
-        self.assertEqual([[]],player_1.hands)
+        self.assertEqual(1,len(player_1.hands))
+        self.assertIsInstance(player_1.hands[0],Hand)
         player_2=Player('Bob',1000)
         self.assertEqual('Bob',player_2.name)
         self.assertEqual('1000',player_2.points)
-        self.assertEqual([[]],player_2.hands)
+        self.assertEqual(1,len(player_2.hands))
         player_3=Player('Wade',2000,3)
         self.assertEqual('Wade',player_3.name)
         self.assertEqual('2000',player_3.points)
-        self.assertEqual([[],[],[]],player_3.hands)
+        self.assertEqual(3,len(player_3.hands))
+        self.assertIsInstance(player_3.hands[1],Hand)
+        self.assertIsInstance(player_3.hands[2],Hand)
 
     def test_player_incorrect_init(self):
         ''' test for player object initialization with incorrect input'''
@@ -69,5 +72,5 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(43,len(deck.pile))
 
         player.return_all_cards(deck)
-        self.assertEqual([[]],player.hands)
+        self.assertEqual(1,len(player.hands))
         self.assertEqual(52,len(deck.pile))
