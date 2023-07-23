@@ -30,23 +30,23 @@ class Player():
         pos = pos if pos else len(cards)
         self.hands.insert(pos,Hand(cards))
 
-    def draw_card(self,deck,hand_pos=1):
+    def draw_card(self,deck,hand_pos=0):
         ''' draw one card from given {deck} to the players hand with id of {hand_pos}'''
         try:
-            self.hands[hand_pos-1]+deck.draw_card()
+            self.hands[hand_pos]+deck.draw_card()
         except IndexError:
             print(f'Currently player {self.name} has only {len(self.hands)} hands!')
 
-    def draw_cards(self,deck,amount=1,hand_pos=1):
+    def draw_cards(self,deck,amount=1,hand_pos=0):
         ''' draw {amount} of cards from given {deck} to the players hand with id of {hand_pos}'''
         if amount<1:
             raise ValueError('Please, pick more cards than that!')
         try:
-            self.hands[hand_pos-1]+deck.draw_cards(amount)
+            self.hands[hand_pos]+deck.draw_cards(amount)
         except IndexError:
             print(f'Currently player {self.name} has only {len(self.hands)} hands!')
 
-    def return_card(self,deck,hand_pos=1,card_pos=-1,deck_pos='b'):
+    def return_card(self,deck,hand_pos=0,card_pos=-1,deck_pos='b'):
         '''
             Returns a card to a {deck} from a hand.
             Card is indicated by hand id (hand_pos) and its position in that hand (card_pos).
@@ -58,7 +58,7 @@ class Player():
         '''
         card=None
         try:
-            card=self.hands[hand_pos-1].return_card(card_pos)
+            card=self.hands[hand_pos].return_card(card_pos)
         except IndexError:
             print(f'Currently player {self.name} has only {len(self.hands)} hands!')
         if card:
@@ -77,9 +77,9 @@ class Player():
         self.hands=[Hand() for i in range(self.amount_of_hands)]
 
 
-    def show_hand(self,hand_pos=1):
+    def show_hand(self,hand_pos=0):
         ''' returns string of cards in players hand with id of {hand_pos}'''
         try:
-            return str(self.hands[hand_pos-1])
+            return str(self.hands[hand_pos])
         except IndexError:
             print(f'Currently player {self.name} has only {len(self.hands)} hands!')

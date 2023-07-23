@@ -9,25 +9,25 @@ class TestDeck(unittest.TestCase):
     ''' testing class'''
     def test_deck_init(self):
         ''' test for Deck initialization - correct number of cards'''
-        deck=d.Deck(start_from='10',no_of_copies=2,no_of_jokers=2)
+        deck=d.Deck(start_from='10',amount_of_copies=2,amount_of_jokers=2)
         self.assertEqual(44,len(deck.pile))
 
-        deck2=d.Deck(start_from='4',end_on='6',no_of_copies=7,no_of_jokers=1)
+        deck2=d.Deck(start_from='4',end_on='6',amount_of_copies=7,amount_of_jokers=1)
         self.assertEqual(91,len(deck2.pile))
 
     def test_deck_incorrect_init(self):
         ''' test for incorrect inputs for Deck initialization'''
         with self.assertRaises(ValueError):
-            d.Deck(start_from='hakuna matata',no_of_copies=2,no_of_jokers=2)
+            d.Deck(start_from='hakuna matata',amount_of_copies=2,amount_of_jokers=2)
 
         with self.assertRaises(ValueError):
-            d.Deck(start_from='9',end_on='6',no_of_copies=7,no_of_jokers=1)
+            d.Deck(start_from='9',end_on='6',amount_of_copies=7,amount_of_jokers=1)
         
         with self.assertRaises(ValueError):
-            d.Deck(start_from='6',end_on='9',no_of_copies=7,no_of_jokers=-1)
+            d.Deck(start_from='6',end_on='9',amount_of_copies=7,amount_of_jokers=-1)
 
         with self.assertRaises(ValueError):
-            d.Deck(start_from='6',end_on='7',no_of_copies=0,no_of_jokers=1)
+            d.Deck(start_from='6',end_on='7',amount_of_copies=0,amount_of_jokers=1)
 
     def test_deck_one_card_methods(self):
         ''' test for drawing and returning card to a pile'''

@@ -74,3 +74,43 @@ class TestPlayer(unittest.TestCase):
         player.return_all_cards(deck)
         self.assertEqual(1,len(player.hands))
         self.assertEqual(52,len(deck.pile))
+
+    def test_player_multiple_hands(self):
+        ''' test for player with multiple hands'''
+        player=Player("Astroid",amount_of_hands=3)
+        self.assertEqual(3,len(player.hands))
+        
+        deck=Deck()
+        deck.shuffle_pile()
+        for hand in player.hands:
+            for _ in range(5):
+                hand.draw_card(deck)
+            self.assertEqual(5,len(hand))
+            hand.draw_cards(deck,2)
+            self.assertEqual(7,len(hand))
+        self.assertEqual(31,len(deck.pile))
+        
+        player.draw_cards(deck,3,1)
+        self.assertEqual(7,len(player.hands[0]))
+        self.assertEqual(10,len(player.hands[1]))
+        self.assertEqual(7,len(player.hands[2]))
+        self.assertEqual(28,len(deck.pile))
+        
+        player.return_card(deck)
+        self.assertEqual(6,len(player.hands[0]))
+        self.assertEqual(10,len(player.hands[1]))
+        self.assertEqual(7,len(player.hands[2]))
+        self.assertEqual(29,len(deck.pile))
+
+        player.hands[0].return_cards_to_deck(deck)
+        self.assertEqual(0,len(player.hands[0]))
+        self.assertEqual(10,len(player.hands[1]))
+        self.assertEqual(7,len(player.hands[2]))
+        self.assertEqual(35,len(deck.pile))
+
+        player.return_all_cards(deck)
+        self.assertEqual(3,len(player.hands))
+        self.assertEqual(0,len(player.hands[0]))
+        self.assertEqual(0,len(player.hands[1]))
+        self.assertEqual(0,len(player.hands[2]))
+        self.assertEqual(52,len(deck.pile))
