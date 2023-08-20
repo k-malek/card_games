@@ -64,7 +64,10 @@ class TestDeck(unittest.TestCase):
         deck=d.Deck(start_from='2',end_on='2')
         self.assertEqual(4,len(deck.pile))
 
-        hand1=deck.draw_cards(5)
+        # trying to draw more cards than there are in a deck raises error
+        hand1=[]
+        with self.assertRaises(IndexError):
+            hand1=deck.draw_cards(5)
         self.assertEqual(0,len(hand1))
         self.assertEqual(4,len(deck.pile))
 

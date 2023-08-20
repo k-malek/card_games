@@ -5,6 +5,7 @@ import unittest
 from card_games.model.deck import Deck
 from card_games.model.hand import Hand
 from card_games.model.player import Player
+from card_games.utils.custom_exceptions import HandIndexException,CardIndexException
 
 class TestPlayer(unittest.TestCase):
     def test_player_init(self):
@@ -43,6 +44,10 @@ class TestPlayer(unittest.TestCase):
         player.add_cards_to_hand(deck.draw_cards(4))
         self.assertEqual(5,len(player.hands[0]))
 
+        # accessing incorrect index for a hand raises exception
+        with self.assertRaises(HandIndexException):
+            player.add_cards_to_hand(deck.draw_cards(5),1)
+
     def test_player_one_hand_return(self):
         ''' test for player with one hand returning a cards'''
         deck=Deck()
@@ -56,10 +61,15 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(9,len(player.hands[0]))
         self.assertEqual(43,len(deck.pile))
 
-        #return a card with index higher than amount of cards (exception handled)
-        deck.return_cards(player.return_cards_from_hand([1,100]))
-        self.assertEqual(9,len(player.hands[0]))
-        self.assertEqual(43,len(deck.pile))
+        deck.return_cards(player.return_cards_from_hand([5,0,2]))
+        self.assertEqual(6,len(player.hands[0]))
+        self.assertEqual(46,len(deck.pile))
+
+        # accessing a card with incorrect id raises exception
+        with self.assertRaises(CardIndexException):
+            deck.return_cards(player.return_cards_from_hand([1,100]))
+        self.assertEqual(6,len(player.hands[0]))
+        self.assertEqual(46,len(deck.pile))
 
         deck.return_cards(player.return_all_cards())
         self.assertEqual(1,len(player.hands))

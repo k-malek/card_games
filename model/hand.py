@@ -1,5 +1,6 @@
 ''' Model for hand (of cards) object'''
 from card_games.model.card import Card
+from card_games.utils.custom_exceptions import CardIndexException
 
 class Hand():
     def __init__(self,cards=None):
@@ -40,8 +41,7 @@ class Hand():
         ''' returns cards by a given {positions}'''
         positions.sort(reverse=True)
         if positions[0]>len(self.cards):
-            print(f"Hand contain {len(self.cards)} cards, incorrect card position - {positions[0]} - provided!")
-            return []
+            raise CardIndexException(self,positions[0])
         returning_cards=[]
         for pos in positions:
             returning_cards.append(self.cards[pos])

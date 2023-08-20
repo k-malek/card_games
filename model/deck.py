@@ -1,6 +1,6 @@
 ''' Model for deck of playing cards deck object'''
 
-from random import shuffle,randint
+from random import shuffle
 import card_games.model.card as c
 
 class Deck:
@@ -33,15 +33,14 @@ class Deck:
     def shuffle_pile(self):
         '''Shuffles the pile of card (randomizes positions of card.in a deck)'''
         shuffle(self.pile)
-    
+
     def draw_cards(self,amount=1):
         '''
             Returns and removes <amount> of topmost (last) cards from a pile
             If there are not enough cards in hand, returns empty list
         '''
         if amount>len(self.pile):
-            print("There's not enough cards in a deck!")
-            return []
+            raise IndexError("There's not enough cards in a deck!")
         cards=self.pile[-amount:]
         del self.pile[-amount:]
         return cards
