@@ -7,5 +7,5 @@ class HandIndexException(IndexError):
 class CardIndexException(IndexError):
     ''' Exception for incorrect Card index from a Hand'''
     def __init__(self,hand,pos,message=''):
-        self.message=f'Currently there are only {len(hand.cards)} card(s) in hand, requested card id {pos}' if not message else message
+        self.message=f'Currently there are only {len(hand.cards)} card(s) in hand, requested card ids {pos}' if not message else message
         super().__init__(self.message)

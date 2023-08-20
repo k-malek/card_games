@@ -40,8 +40,8 @@ class Hand():
     def return_cards(self,positions):
         ''' returns cards by a given {positions}'''
         positions.sort(reverse=True)
-        if positions[0]>len(self.cards):
-            raise CardIndexException(self,positions[0])
+        if positions[0]>len(self.cards) or positions[-1]<0:
+            raise CardIndexException(self,positions)
         returning_cards=[]
         for pos in positions:
             returning_cards.append(self.cards[pos])
