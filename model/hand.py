@@ -30,52 +30,28 @@ class Hand():
         return len(self.cards)
 
     def set_value(self,value):
-        ''' value setter'''
         self.value=value
 
-    def add_card(self,card):
-        ''' adding a card to a hand'''
-        self.cards.append(card)
-
     def add_cards(self,cards):
-        ''' adding multiple cards to a hand'''
+        ''' adds cards to a hand'''
         self.cards+=cards
 
-    def draw_card(self,deck):
-        ''' adding a card to a hand from a deck'''
-        self.cards.append(deck.draw_card())
+    def return_cards(self,positions):
+        ''' returns cards by a given {positions}'''
+        positions.sort(reverse=True)
+        print(positions)
+        print(positions[0]>len(self.cards))
+        if positions[0]>len(self.cards):
+            print("Wrong card position provided!")
+            return []
+        returning_cards=[]
+        for pos in positions:
+            returning_cards.append(self.cards[pos])
+            del self.cards[pos]
+        return returning_cards
 
-    def draw_cards(self,deck,amount_of_cards):
-        ''' adding multiple cards to a hand from a deck'''
-        self.cards+=deck.draw_cards(amount_of_cards)
-
-    def return_card(self,pos):
-        ''' removes card from a hand by its {pos}ition'''
-        try:
-            card=self.cards[pos]
-            self.cards.remove(card)
-        except IndexError:
-            print(f'Currently player has only {len(self.cards)} cards in this hand!')
-            return None
-        return card
-
-    def return_cards(self):
+    def return_all_cards(self):
         ''' removes all cards from a hand'''
         cards=self.cards
         self.cards=[]
         return cards
-
-    def return_card_to_deck(self,deck,pos):
-        ''' removes card from a hand to a deck by its {pos}ition'''
-        try:
-            card=self.cards[pos]
-            self.cards.remove(card)
-        except IndexError:
-            print(f'Currently player has only {len(self.cards)} cards in this hand!')
-        deck.return_card(card)
-
-    def return_cards_to_deck(self,deck):
-        ''' removes all cards from a hand to a deck'''
-        cards=self.cards
-        self.cards=[]
-        deck.return_cards(cards)

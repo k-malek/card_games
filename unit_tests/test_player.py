@@ -37,16 +37,10 @@ class TestPlayer(unittest.TestCase):
         deck=Deck()
         deck.shuffle_pile()
         player=Player("Sean")
-        player.draw_card(deck)
+        player.add_cards_to_hand(deck.draw_cards())
         self.assertEqual(1,len(player.hands[0]))
 
-        player.draw_cards(deck,amount=4)
-        self.assertEqual(5,len(player.hands[0]))
-
-        #draw a card to a second - non existant - hand (exception handled)
-        player.draw_card(deck,hand_pos=2)
-        #deck and hand are unaffected
-        self.assertEqual(47,len(deck.pile))
+        player.add_cards_to_hand(deck.draw_cards(4))
         self.assertEqual(5,len(player.hands[0]))
 
     def test_player_one_hand_return(self):
@@ -54,25 +48,22 @@ class TestPlayer(unittest.TestCase):
         deck=Deck()
 
         player=Player("Vinny")
-        player.draw_cards(deck,amount=10)
+        player.add_cards_to_hand(deck.draw_cards(10))
         self.assertEqual(10,len(player.hands[0]))
+        self.assertEqual(42,len(deck.pile))
 
-        player.return_card(deck,card_pos=1,deck_pos='t')
-        self.assertEqual(9,len(player.hands[0]))
-        self.assertEqual(43,len(deck.pile))
-
-        #return a card from a second - non existant - hand (exception handled)
-        player.return_card(deck,hand_pos=2)
+        deck.return_cards(player.return_cards_from_hand([0]))
         self.assertEqual(9,len(player.hands[0]))
         self.assertEqual(43,len(deck.pile))
 
         #return a card with index higher than amount of cards (exception handled)
-        player.return_card(deck,card_pos=10)
+        deck.return_cards(player.return_cards_from_hand([1,100]))
         self.assertEqual(9,len(player.hands[0]))
         self.assertEqual(43,len(deck.pile))
 
-        player.return_all_cards(deck)
+        deck.return_cards(player.return_all_cards())
         self.assertEqual(1,len(player.hands))
+        self.assertEqual(0,len(player.hands[0]))
         self.assertEqual(52,len(deck.pile))
 
     def test_player_multiple_hands(self):
@@ -83,32 +74,29 @@ class TestPlayer(unittest.TestCase):
         deck=Deck()
         deck.shuffle_pile()
         for hand in player.hands:
-            for _ in range(5):
-                hand.draw_card(deck)
+            hand.add_cards(deck.draw_cards(5))
             self.assertEqual(5,len(hand))
-            hand.draw_cards(deck,2)
-            self.assertEqual(7,len(hand))
-        self.assertEqual(31,len(deck.pile))
+        self.assertEqual(37,len(deck.pile))
         
-        player.draw_cards(deck,3,1)
-        self.assertEqual(7,len(player.hands[0]))
-        self.assertEqual(10,len(player.hands[1]))
-        self.assertEqual(7,len(player.hands[2]))
-        self.assertEqual(28,len(deck.pile))
+        player.add_cards_to_hand(deck.draw_cards(3),1)
+        self.assertEqual(5,len(player.hands[0]))
+        self.assertEqual(8,len(player.hands[1]))
+        self.assertEqual(5,len(player.hands[2]))
+        self.assertEqual(34,len(deck.pile))
         
-        player.return_card(deck)
-        self.assertEqual(6,len(player.hands[0]))
-        self.assertEqual(10,len(player.hands[1]))
-        self.assertEqual(7,len(player.hands[2]))
-        self.assertEqual(29,len(deck.pile))
-
-        player.hands[0].return_cards_to_deck(deck)
-        self.assertEqual(0,len(player.hands[0]))
-        self.assertEqual(10,len(player.hands[1]))
-        self.assertEqual(7,len(player.hands[2]))
+        deck.return_cards(player.return_cards_from_hand([1]))
+        self.assertEqual(4,len(player.hands[0]))
+        self.assertEqual(8,len(player.hands[1]))
+        self.assertEqual(5,len(player.hands[2]))
         self.assertEqual(35,len(deck.pile))
 
-        player.return_all_cards(deck)
+        deck.return_cards(player.hands[0].return_all_cards())
+        self.assertEqual(0,len(player.hands[0]))
+        self.assertEqual(8,len(player.hands[1]))
+        self.assertEqual(5,len(player.hands[2]))
+        self.assertEqual(39,len(deck.pile))
+
+        deck.return_cards(player.return_all_cards())
         self.assertEqual(3,len(player.hands))
         self.assertEqual(0,len(player.hands[0]))
         self.assertEqual(0,len(player.hands[1]))

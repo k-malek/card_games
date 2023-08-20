@@ -30,41 +30,23 @@ class Player():
         pos = pos if pos else len(cards)
         self.hands.insert(pos,Hand(cards))
 
-    def draw_card(self,deck,hand_pos=0):
-        ''' draw one card from given {deck} to the players hand with id of {hand_pos}'''
+    def add_cards_to_hand(self,cards,hand_pos=0):
+        ''' add {cards} to the players hand with id of {hand_pos}'''
         try:
-            self.hands[hand_pos]+deck.draw_card()
+            self.hands[hand_pos].add_cards(cards)
         except IndexError:
             print(f'Currently player {self.name} has only {len(self.hands)} hands!')
 
-    def draw_cards(self,deck,amount=1,hand_pos=0):
-        ''' draw {amount} of cards from given {deck} to the players hand with id of {hand_pos}'''
-        if amount<1:
-            raise ValueError('Please, pick more cards than that!')
+    def return_cards_from_hand(self,positions,hand_pos=0):
+        ''' returns {cards} from the players hand with id of {hand_pos} and with {positions} in hand'''
+        cards=[]
         try:
-            self.hands[hand_pos]+deck.draw_cards(amount)
+            cards = self.hands[hand_pos].return_cards(positions)
         except IndexError:
             print(f'Currently player {self.name} has only {len(self.hands)} hands!')
+        return cards
 
-    def return_card(self,deck,hand_pos=0,card_pos=-1,deck_pos='b'):
-        '''
-            Returns a card to a {deck} from a hand.
-            Card is indicated by hand id (hand_pos) and its position in that hand (card_pos).
-            By default card is picked as a last card from the main hand (first hand).
-            Additional optional parameter:
-                deck_pos ('b','t') - indicates wheather the card is to placed on 
-                        (t)op or on (b)ottom of a {deck} pile. If anything else 
-                        given - places a card on a random place in a {deck}}
-        '''
-        card=None
-        try:
-            card=self.hands[hand_pos].return_card(card_pos)
-        except IndexError:
-            print(f'Currently player {self.name} has only {len(self.hands)} hands!')
-        if card:
-            deck.return_card(card,deck_pos)
-
-    def return_all_cards(self,deck,do_shuffle=True):
+    def return_all_cards(self):
         ''' 
             returns all cards from all hands to a deck,
             deck is shuffled (may be ommited with optional argument do_shuffle=False)
@@ -72,9 +54,9 @@ class Player():
         '''
         all_cards=[]
         for hand in self.hands:
-            all_cards+=hand.return_cards()
-        deck.return_cards(all_cards,do_shuffle)
+            all_cards+=hand.return_all_cards()
         self.hands=[Hand() for i in range(self.amount_of_hands)]
+        return all_cards
 
 
     def show_hand(self,hand_pos=0):

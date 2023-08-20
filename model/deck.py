@@ -33,16 +33,12 @@ class Deck:
     def shuffle_pile(self):
         '''Shuffles the pile of card (randomizes positions of card.in a deck)'''
         shuffle(self.pile)
-
-    def draw_card(self):
-        '''Returns and removes the topmost (last) card from a pile'''
-        if not self.pile:
-            print("Deck is empty!")
-            return None
-        return self.pile.pop()
     
     def draw_cards(self,amount=1):
-        '''Returns and removes <amount> of topmost (last) cards from a pile'''
+        '''
+            Returns and removes <amount> of topmost (last) cards from a pile
+            If there are not enough cards in hand, returns empty list
+        '''
         if amount>len(self.pile):
             print("There's not enough cards in a deck!")
             return []
@@ -50,31 +46,20 @@ class Deck:
         del self.pile[-amount:]
         return cards
 
-    def return_card(self,card,position='b'):
-        '''
-            Returns a {card} to a pile.
-            Optional parameter:
-                position ('b','t') - indicates wheather the {card} is to placed on (t)op or on (b)ottom of a pile.
-                                    if anything else given - places a {card} in a random place in a deck
-        '''
-        if position=='b':
-            self.pile.insert(0,card)
-        elif position=='t':
-            self.pile.append(card)
-        else:
-            self.pile.insert(randint(0,len(self.pile)-1),card)
-
     def return_cards(self,cards,do_shuffle=True):
         '''
             Returns all provided cards (as list, which may contain single cards 
             as well as list of cards (ex. hands)) to the pile
             than the pile is shuffled (may be ommited with optional argument do_shuffle=False)
         '''
-        for card_group in cards:
-            if isinstance(card_group,list):
-                self.pile+=card_group
-            else:
-                self.pile.append(card_group)
+        if isinstance(cards,c.Card):
+            self.pile.append(cards)
+        else:
+            for card_group in cards:
+                if isinstance(card_group,list):
+                    self.pile+=card_group
+                else:
+                    self.pile.append(card_group)
         
         if do_shuffle:
             self.shuffle_pile()

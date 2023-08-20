@@ -35,21 +35,13 @@ class TestDeck(unittest.TestCase):
         deck.shuffle_pile()
         self.assertEqual(52,len(deck.pile))
 
-        card=deck.draw_card()
+        card=deck.draw_cards()[0]
         self.assertIsInstance(card,c.Card)
         self.assertEqual(51,len(deck.pile))
 
-        deck.return_card(card,'anywhere')
+        deck.return_cards(card,'anywhere')
         self.assertEqual(52,len(deck.pile))
         self.assertIn(card,deck.pile)
-        
-        deck.return_card(card)
-        self.assertEqual(53,len(deck.pile))
-        self.assertEqual(card,deck.pile[0])
-
-        deck.return_card(card,'t')
-        self.assertEqual(54,len(deck.pile))
-        self.assertEqual(card,deck.pile[-1])
 
     def test_deck_multiple_cards_methods(self):
         ''' test for drawing and returning multiple cards to a pile'''
@@ -58,7 +50,7 @@ class TestDeck(unittest.TestCase):
 
         hand1=deck.draw_cards(5)
         hand2=deck.draw_cards(5)
-        card=deck.draw_card()
+        card=deck.draw_cards()[0]
         self.assertEqual(5,len(hand1))
         self.assertEqual(5,len(hand2))
         self.assertEqual(41,len(deck.pile))
@@ -80,14 +72,11 @@ class TestDeck(unittest.TestCase):
         self.assertEqual(4,len(hand1))
         self.assertEqual(0,len(deck.pile))
 
-        card=deck.draw_card()
-        self.assertIsNone(card)
-
     def test_two_decks(self):
         ''' test for multiple decks are independedly handled'''
         deck1=d.Deck()
         deck2=d.Deck()
         deck1.shuffle_pile()
-        self.assertEqual(str(c.Card('A','\u2660')),str(deck2.draw_card()))
+        self.assertEqual(str(c.Card('A','\u2660')),str(deck2.draw_cards()[0]))
         self.assertEqual(52,len(deck1.pile))
         self.assertEqual(51,len(deck2.pile))
