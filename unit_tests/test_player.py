@@ -90,7 +90,7 @@ class TestPlayer(unittest.TestCase):
         self.assertEqual(5,len(player.hands[2]))
         self.assertEqual(35,len(deck.pile))
 
-        deck.return_cards(player.hands[0].return_all_cards())
+        deck.return_cards(player.return_all_cards_from_hand(0))
         self.assertEqual(0,len(player.hands[0]))
         self.assertEqual(8,len(player.hands[1]))
         self.assertEqual(5,len(player.hands[2]))

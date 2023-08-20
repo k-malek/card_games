@@ -45,6 +45,15 @@ class Player():
         except IndexError:
             print(f'Currently player {self.name} has only {len(self.hands)} hands!')
         return cards
+    
+    def return_all_cards_from_hand(self,hand_pos=0):
+        ''' returns {cards} from the players hand with id of {hand_pos} and with {positions} in hand'''
+        cards=[]
+        try:
+            cards = self.hands[hand_pos].return_all_cards()
+        except IndexError:
+            print(f'Currently player {self.name} has only {len(self.hands)} hands!')
+        return cards
 
     def return_all_cards(self):
         ''' 

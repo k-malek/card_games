@@ -39,10 +39,8 @@ class Hand():
     def return_cards(self,positions):
         ''' returns cards by a given {positions}'''
         positions.sort(reverse=True)
-        print(positions)
-        print(positions[0]>len(self.cards))
         if positions[0]>len(self.cards):
-            print("Wrong card position provided!")
+            print(f"Hand contain {len(self.cards)} cards, incorrect card position - {positions[0]} - provided!")
             return []
         returning_cards=[]
         for pos in positions:
